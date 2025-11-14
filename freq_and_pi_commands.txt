@@ -1,0 +1,11 @@
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr1.vcf.gz --freq --out allele_freq_chr1
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr4.vcf.gz --freq --out allele_freq_chr4
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr6.vcf.gz --freq --out allele_freq_chr6
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr14.vcf.gz --freq --out allele_freq_chr14
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr15.vcf.gz --freq --out allele_freq_chr15
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr1.vcf.gz --window-pi 1000 --window-pi-step 100 --out pi_win1000_chr1
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr4.vcf.gz --window-pi 100000 --window-pi-step 10000 --out pi_win100000_chr4
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr6.vcf.gz --window-pi 1000 --window-pi-step 100 --out pi_win1000_chr6
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr14.vcf.gz --window-pi 1000 --window-pi-step 100 --out pi_win1000_chr14
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr14.vcf.gz --window-pi 10000 --window-pi-step 1000 --out pi_win10000_chr14
+vcftools --gzvcf beagle_phased_biallelic_SNPs_1000GP30X_chr15.vcf.gz --window-pi 100000 --window-pi-step 10000 --out pi_win100000_chr15
