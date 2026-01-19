@@ -39,4 +39,6 @@ Directories and Scripts:
     - `mark_inversion_windows.py`: annotates windows with labels denoting membership within an inversion feature (used for regression R scripts)
     - `mark_inversion_windows_with_bool.py`: annotates windows with 0 or 1 denoting membership within an inversion feature (used for ROC curves)
     - `inversion_classification_ROC_curves.py`: ROC curves showing the power of each statistic in classifying windows as inversions or not
+
+- `hapcount_scan.py`: current version of haplotype count scan in SNP windows
     
