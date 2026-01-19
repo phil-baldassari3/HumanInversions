@@ -1,5 +1,0 @@
-bcftools view -m2 -M2 -v snps 20201028_CCDG_14151_B01_GRM_WGS_2020-08-05_chr1.recalibrated_variants.vcf.gz -Oz -o biallelic_SNPs_1000GP30X_chr1.vcf.gz
-bcftools view -m2 -M2 -v snps 20201028_CCDG_14151_B01_GRM_WGS_2020-08-05_chr4.recalibrated_variants.vcf.gz -Oz -o biallelic_SNPs_1000GP30X_chr4.vcf.gz
-bcftools view -m2 -M2 -v snps 20201028_CCDG_14151_B01_GRM_WGS_2020-08-05_chr6.recalibrated_variants.vcf.gz -Oz -o biallelic_SNPs_1000GP30X_chr6.vcf.gz
-bcftools view -m2 -M2 -v snps 20201028_CCDG_14151_B01_GRM_WGS_2020-08-05_chr14.recalibrated_variants.vcf.gz -Oz -o biallelic_SNPs_1000GP30X_chr14.vcf.gz
-bcftools view -m2 -M2 -v snps 20201028_CCDG_14151_B01_GRM_WGS_2020-08-05_chr15.recalibrated_variants.vcf.gz -Oz -o biallelic_SNPs_1000GP30X_chr15.vcf.gz
