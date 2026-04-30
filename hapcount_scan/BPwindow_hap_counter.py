@@ -60,16 +60,22 @@ def _construct_matrix(d):
 
 def _count_unique_haps(haplo_matrix):
     """
-    Helper counts unique haplotypes in a given window.
+    Helper counts unique haplotypes and sample size of a given window.
+    
+    :param haplo_matrix: each sublist is a site and each sublist element is the haplotype at that site
+    :type haplo_matrix: list of lists
 
-    haplo_matrix (list of lists): each sublist is a site and each sublist element is the haplotype at that site
-
-    Returns number of unique haplotypes in the haplo_matrix
+    :returns: number of unique haplotypes and total number of haplotypes (sample size) in the haplo_matrix
+    :rtype: int, int
     """
+
 
     #converting matrix to array and transposing
     matrix = np.array(haplo_matrix)
     matrix = np.transpose(matrix)
+
+    #counting sample size
+    num_samples = len(matrix)
 
     #uniquify
     uniq_matrix = np.unique(matrix, axis=0)
@@ -78,7 +84,7 @@ def _count_unique_haps(haplo_matrix):
     num_uniq_haps = len(uniq_matrix)
 
 
-    return num_uniq_haps
+    return num_uniq_haps, num_samples
 
 
 
@@ -137,7 +143,7 @@ def BPwindow_hap_counter(vcfgz, window_size, window_step):
     with gzip.open(vcfgz, "rt") as vcf, open(f"{chrom}_BPwindow{window_size}_BPstep{window_step}_hap_counts.csv", "a") as outcsv:
 
         #write header line
-        outcsv.write(",".join(["CHROM", "START", "END", "NUM_uniq_haps", "SNP_density"]) + "\n")
+        outcsv.write(",".join(["#CHROM", "START", "END", "SNP_density", "hapcount", "prop_unique", "sample_size"]) + "\n")
 
         #window book keeping
         win_start = 1
@@ -173,13 +179,14 @@ def BPwindow_hap_counter(vcfgz, window_size, window_step):
                     #construct haplo matrix
                     hap_m = _construct_matrix(window_deque)
                     #count haps
-                    num_haps = _count_unique_haps(hap_m)
+                    num_haps, sample_size = _count_unique_haps(hap_m)
+                    proportion_haps = num_haps / sample_size
                     #compute SNP density
                     snpden = len(window_deque) / window_size
                     #sliding to next step
                     _pop_bp_step(window_deque, win_step)
                     #write to file
-                    outcsv.write(_joinany(",", [chrom, win_start, win_end, num_haps, snpden]) + "\n")
+                    outcsv.write(_joinany(",", [chrom, win_start, win_end, snpden, num_haps, proportion_haps, sample_size]) + "\n")
 
                 #increment window
                 win_end = i + window_step
@@ -195,11 +202,12 @@ def BPwindow_hap_counter(vcfgz, window_size, window_step):
             #construct haplo matrix
             hap_m = _construct_matrix(window_deque)
             #count haps
-            num_haps = _count_unique_haps(hap_m)
-            #find number of SNPs
+            num_haps, sample_size = _count_unique_haps(hap_m)
+            proportion_haps = num_haps / sample_size
+            #compute SNP density
             snpden = len(window_deque) / (win_end - win_start)
             #write to file
-            outcsv.write(_joinany(",", [chrom, win_start, win_end, num_haps, snpden]) + "\n")
+            outcsv.write(_joinany(",", [chrom, win_start, win_end, snpden, num_haps, proportion_haps, sample_size]) + "\n")
 
 
 
@@ -221,20 +229,27 @@ def run_hapcount_scan(argloader_obj):
 def main():
 
     vcflist = [
-        "beagle_phased_biallelic_SNPs_1000GP30X_chr2.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr3.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr4.vcf.gz",
-        "beagle_phased_biallelic_SNPs_1000GP30X_chr5.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr6.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr7.vcf.gz",
-        "beagle_phased_biallelic_SNPs_1000GP30X_chr8.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr9.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr11.vcf.gz",
-        "beagle_phased_biallelic_SNPs_1000GP30X_chr13.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr14.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr15.vcf.gz",
-        "beagle_phased_biallelic_SNPs_1000GP30X_chr16.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr17.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_chr19.vcf.gz",
-        "beagle_phased_biallelic_SNPs_1000GP30X_PARchrX.vcf.gz", "beagle_phased_biallelic_SNPs_1000GP30X_nonPARchrX.vcf.gz", "beagle_imputed_males_biallelic_SNPs_1000GP30X_chrY.vcf.gz"
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr1.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr10.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr12.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr18.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr20.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr21.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_chr22.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_PARchrX.vcf.gz",
+        "beagle_phased_biallelic_SNPs_1000GP30X_nonPARchrX.vcf.gz",
         ]
     
     loaderlist = []
 
-    for vcffile in vcflist:
-        loaderlist.append(ArgLoader(vcffile, 3000, 1500))
+    loaderlist.append(ArgLoader("beagle_phased_biallelic_SNPs_1000GP30X_chr2.vcf.gz", 10000, 1000))
 
-    pool = Pool(processes=10)
+    for vcffile in vcflist:
+        loaderlist.append(ArgLoader(vcffile, 10000, 1000))
+    for vcffile in vcflist:
+        loaderlist.append(ArgLoader(vcffile, 100000, 10000))
+
+    pool = Pool(processes=19)
     pool.map(run_hapcount_scan, loaderlist)
 
 
